@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script para seleccionar un archivo MP4, verificar formato y duración (<= 30s),
+Script para seleccionar un archivo MP4, verificar formato y duración (<= 1min),
 mostrar metadatos, comprimirlo a H.264 con distintos perfiles de compresión y
 medir el tiempo de compresión.
 
@@ -22,13 +22,13 @@ def configurar_parametros(perfil):
     """
     if perfil == 'ultra':
         # Máxima compresión / más lento
-        return {'preset': 'veryslow', 'crf': '30'}
+        return {'preset': 'veryslow', 'crf': '21'}
     elif perfil == 'rapido':
         # Compresión rápida / menos reducción de tamaño
-        return {'preset': 'superfast', 'crf': '23'}
+        return {'preset': 'veryfast', 'crf': '26'}
     else:
         # Perfil equilibrado
-        return {'preset': 'medium', 'crf': '26'}
+        return {'preset': 'medium', 'crf': '23'}
 
 # Aplicamos la configuración elegida
 parametros    = configurar_parametros(PERFIL_COMPRESION)
@@ -36,7 +36,7 @@ FFMPEG_PRESET = parametros['preset']
 FFMPEG_CRF    = parametros['crf']
 
 # Duración máxima permitida (segundos)
-MAX_DURACION = 180.0
+MAX_DURACION = 120.0
 
 
 # ----------------------------------------------
