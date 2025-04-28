@@ -36,7 +36,7 @@ FFMPEG_PRESET = parametros['preset']
 FFMPEG_CRF    = parametros['crf']
 
 # Duración máxima permitida (segundos)
-MAX_DURACION = 120.0
+MAX_DURACION = 180.0
 
 
 # ----------------------------------------------
