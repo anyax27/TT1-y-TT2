@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script para seleccionar un archivo MP4, verificar formato y duración (<= 1min),
+Script para seleccionar un archivo MP4, verificar formato y duración (<= 3min),
 mostrar metadatos, comprimirlo a H.264 con distintos perfiles de compresión y
 medir el tiempo de compresión.
 
