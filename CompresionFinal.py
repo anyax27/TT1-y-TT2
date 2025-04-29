@@ -22,13 +22,13 @@ def configurar_parametros(perfil):
     """
     if perfil == 'ultra':
         # Máxima compresión / más lento
-        return {'preset': 'veryslow', 'crf': '21'}
+        return {'preset': 'veryslow', 'crf': '25'}
     elif perfil == 'rapido':
         # Compresión rápida / menos reducción de tamaño
-        return {'preset': 'veryfast', 'crf': '26'}
+        return {'preset': 'veryfast', 'crf': '28'}
     else:
         # Perfil equilibrado
-        return {'preset': 'medium', 'crf': '23'}
+        return {'preset': 'medium', 'crf': '26'}
 
 # Aplicamos la configuración elegida
 parametros    = configurar_parametros(PERFIL_COMPRESION)
@@ -37,6 +37,17 @@ FFMPEG_CRF    = parametros['crf']
 
 # Duración máxima permitida (segundos)
 MAX_DURACION = 180.0
+
+# ----------------------------------------------
+# 📦 IMPORTACIONES Y SEMILLA
+# ----------------------------------------------
+import random
+import numpy as np
+
+# Semilla global
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
 
 
 # ----------------------------------------------
