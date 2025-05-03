@@ -2,9 +2,10 @@
 """
 Script para seleccionar un archivo MP4, verificar formato y duración (<= 3min),
 mostrar metadatos, comprimirlo a H.264 con distintos perfiles de compresión,
-medir el tiempo de compresión y registrar los resultados en un CSV.
+medir el tiempo de compresión y registrar los resultados en un CSV para comparar los perfiles
+de compresión para el estandar H.264
 
-Requisitos:
+REQUISITOS:
 - Python 3.x
 - FFmpeg (ffprobe y ffmpeg) en PATH
 """

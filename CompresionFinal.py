@@ -13,7 +13,7 @@ Requisitos:
 # 🔧 CONFIGURACIÓN DE PARÁMETROS DE COMPRESIÓN
 # ----------------------------------------------
 # Selección de perfil: 'ultra', 'equilibrado', 'rapido'
-PERFIL_COMPRESION = 'rapido'
+PERFIL_COMPRESION = 'equilibrado'
 
 def configurar_parametros(perfil):
     """
@@ -22,13 +22,13 @@ def configurar_parametros(perfil):
     """
     if perfil == 'ultra':
         # Máxima compresión / más lento
-        return {'preset': 'veryslow', 'crf': '25'}
+        return {'preset': 'veryslow', 'crf': '24'}
     elif perfil == 'rapido':
         # Compresión rápida / menos reducción de tamaño
-        return {'preset': 'veryfast', 'crf': '28'}
+        return {'preset': 'veryfast', 'crf': '27'}
     else:
         # Perfil equilibrado
-        return {'preset': 'medium', 'crf': '26'}
+        return {'preset': 'medium', 'crf': '25'}
 
 # Aplicamos la configuración elegida
 parametros    = configurar_parametros(PERFIL_COMPRESION)
