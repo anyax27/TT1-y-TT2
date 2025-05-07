@@ -27,6 +27,7 @@ import numpy as np
 from skimage.metrics import structural_similarity as ssim
 from typing import Tuple
 
+
 # ----------------------------------------------
 # 📂 FUNCIÓN: SELECCIÓN DE 4 VIDEOS
 # ----------------------------------------------
@@ -67,17 +68,40 @@ def calcular_psnr(img1: np.ndarray, img2: np.ndarray) -> float:
     return cv2.PSNR(img1, img2)
 
 def calcular_ssim(img1: np.ndarray, img2: np.ndarray) -> float:
-    """Calcula SSIM entre dos imágenes (RGB)."""
+    """
+    Calcula SSIM entre dos imágenes RGB normalizadas en [0,1].
+    Usa channel_axis=2 y data_range=1.0.
+    """
+    # Normalizar a [0,1]
     img1_f = img1.astype(np.float32) / 255.0
     img2_f = img2.astype(np.float32) / 255.0
-    s, _ = ssim(img1_f, img2_f, full=True, multichannel=True)
-    return s
+
+    # Asegurar que las dos imágenes tengan el mismo tamaño
+    if img1_f.shape != img2_f.shape:
+        img2_f = cv2.resize(img2_f, (img1_f.shape[1], img1_f.shape[0]))
+
+    # Estrategia de ventana fija pequeña para evitar excesos
+    # La ventana por defecto es 7, funciona si la imagen >7×7
+    h, w = img1_f.shape[:2]
+    if min(h, w) < 7:
+        # Si es muy pequeña, devolvemos similitud perfecta
+        return 1.0
+
+    # Calcular SSIM directo sin full=True
+    return ssim(
+        img1_f,
+        img2_f,
+        channel_axis=2,
+        data_range=1.0,
+        win_size=7
+    )
 
 def evaluar_videos(video_ref: str, video_cmp: str) -> Tuple[float,float]:
     """
-    Compara dos vídeos frame a frame:
-      - Recorta al menor número de frames compartido
-      - Calcula PSNR y SSIM para cada par de frames
+    Compara dos vídeos muestreando frames:
+      - Toma ~50 muestras equiespaciadas en el clip
+      - Reduce cada frame a resolución 640×360 para acelerar
+      - Calcula PSNR y SSIM en estas muestras
       - Retorna los valores promedio.
     """
     cap_ref = cv2.VideoCapture(video_ref)
@@ -86,33 +110,48 @@ def evaluar_videos(video_ref: str, video_cmp: str) -> Tuple[float,float]:
         print("Error al abrir vídeos.")
         sys.exit(1)
 
+    # Número mínimo de frames
     n_ref = int(cap_ref.get(cv2.CAP_PROP_FRAME_COUNT))
     n_cmp = int(cap_cmp.get(cv2.CAP_PROP_FRAME_COUNT))
     n = min(n_ref, n_cmp)
+    if n == 0:
+        print("Vídeos sin frames.")
+        sys.exit(1)
+
+    # Configuración de muestreo y reducción de resolución
+    muestras = min(50, n)
+    frame_skip = max(1, n // muestras)
+    target_size = (640, 360)
 
     suma_psnr = 0.0
     suma_ssim = 0.0
     cont = 0
 
-    for _ in range(n):
+    for i in range(0, n, frame_skip):
+        cap_ref.set(cv2.CAP_PROP_POS_FRAMES, i)
+        cap_cmp.set(cv2.CAP_PROP_POS_FRAMES, i)
         ret_r, f_r = cap_ref.read()
         ret_c, f_c = cap_cmp.read()
         if not (ret_r and ret_c):
             break
-        if f_r.shape != f_c.shape:
-            f_c = cv2.resize(f_c, (f_r.shape[1], f_r.shape[0]))
-        suma_psnr += calcular_psnr(f_r, f_c)
-        suma_ssim += calcular_ssim(f_r, f_c)
+
+        # Reducir resolución para cálculo
+        small_r = cv2.resize(f_r, target_size)
+        small_c = cv2.resize(f_c, target_size)
+
+        suma_psnr += calcular_psnr(small_r, small_c)
+        suma_ssim += calcular_ssim(small_r, small_c)
         cont += 1
 
     cap_ref.release()
     cap_cmp.release()
 
     if cont == 0:
-        print("No se compararon frames.")
+        print("No se compararon muestras.")
         sys.exit(1)
 
-    return suma_psnr/cont, suma_ssim/cont
+    return suma_psnr / cont, suma_ssim / cont
+
 
 # ----------------------------------------------
 # 🚀 FUNCIÓN PRINCIPAL

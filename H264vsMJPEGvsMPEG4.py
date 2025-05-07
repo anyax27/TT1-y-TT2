@@ -23,10 +23,10 @@ def configurar_parametros(perfil):
         return {'preset': 'veryslow', 'crf': '24'}
     elif perfil == 'rapido':
         # Compresión rápida / menos reducción de tamaño
-        return {'preset': 'veryfast', 'crf': '27'}
+        return {'preset': 'veryfast', 'crf': '28'}
     else:
         # Perfil equilibrado
-        return {'preset': 'medium', 'crf': '25'}
+        return {'preset': 'faster', 'crf': '27'}
 
 parametros    = configurar_parametros(PERFIL_COMPRESION)
 FFMPEG_PRESET = parametros['preset']
