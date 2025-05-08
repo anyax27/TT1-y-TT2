@@ -41,6 +41,7 @@ MAX_DURACION = 180.0
 import tkinter as tk
 from tkinter import filedialog
 import os, mimetypes, subprocess, json, sys, time
+import matplotlib.pyplot as plt
 
 
 # ----------------------------------------------
@@ -215,7 +216,31 @@ def main():
     print(f"M-JPEG   : -{red_mjpeg:.2f}MB ({red_mjpeg/size_o_mb*100:.1f}%) en {t_mjpeg:.2f}s")
     print(f"MPEG-4   : -{red_mpeg4:.2f}MB ({red_mpeg4/size_o_mb*100:.1f}%) en {t_mpeg4:.2f}s")
     print(f"Ratio tiempos: MJPEG/H264={t_mjpeg/t_h264:.1f}x, MPEG4/H264={t_mpeg4/t_h264:.1f}x")
+    
+    # Gráficas
+    labels=['Original','H.264','M-JPEG','MPEG-4']
+    sizes=[size_o_mb,size_h264,size_mjpeg,size_mpeg4]
+    times=[t_h264,t_mjpeg,t_mpeg4]
+    colors_sizes=['gray','blue','orange','green']
+    colors_times=['blue','orange','green']
 
+    # Gráfica de tamaños (incluye original)
+    plt.figure()
+    plt.bar(labels, sizes, color=colors_sizes)
+    plt.xlabel('Codec')
+    plt.ylabel('Tamaño (MB)')
+    plt.title('Comparación de tamaño (incluye original)')
+    plt.tight_layout()
+    plt.show()
+
+    # Gráfica de tiempos de compresión
+    plt.figure()
+    plt.bar(labels[1:], times, color=colors_times)
+    plt.xlabel('Codec')
+    plt.ylabel('Tiempo (s)')
+    plt.title('Comparación de tiempo de compresión')
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == '__main__':
     main()
