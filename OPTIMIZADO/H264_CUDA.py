@@ -17,7 +17,7 @@ from tkinter import filedialog
 # 🔧 CONFIGURACIÓN NVENC
 # ----------------------------------------------
 PRESET_NVENC = 'hq'    # Opciones: 'llhq', 'hq', 'bd', 'll', etc.
-CQ_VALUE    = '32'     # Calidad NVENC: 27=alta, 30=media, 32=ligera
+CQ_VALUE    = '31'     # Calidad NVENC: 27=alta, 30=media, 32=ligera
 USE_BITRATE = False    # Si True, usamos rate control + bitrate abajo
 TARGET_BITRATE = '1M'  # e.g. '800k', '1M', '2M'
 
